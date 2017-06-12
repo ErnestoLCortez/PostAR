@@ -1,31 +1,26 @@
 import React, { Component } from 'react';
-import { Spinner, Button, Label, Text, Content, Card, CardItem, Form, Input, Item } from 'native-base';
+import { Spinner, Button, Text, Content, Card, Form } from 'native-base';
 import { connect } from 'react-redux';
-import { emailChanged, passwordChanged, loginUser } from '../redux/actions';
+import { loginUser } from '../redux/actions';
 
 class LoginScreen extends Component {
-  onEmailChange(text) {
-    this.props.emailChanged(text);
+
+  onGoogleButtonPress(){
+    //FireAuth.googleLogin();
   }
 
-  onPasswordChange(text){
-    this.props.passwordChanged(text)
+  onFacebookButtonPress(){
+    //FireAuth.facebookLogin();
   }
 
-  onButtonPress() {
-    const { email, password } = this.props;
-
-    this.props.loginUser({ email, password });
-  }
-
-  renderButton() {
+  renderButton(text, onPress) {
     if (this.props.loading) {
       return <Spinner size="large" />;
     }
 
     return (
-      <Button full onPress={this.onButtonPress.bind(this)}>
-        <Text>Sign In</Text>
+      <Button full onPress={onPress}>
+        <Text>{text}</Text>
       </Button>
     )
   }
@@ -34,31 +29,10 @@ class LoginScreen extends Component {
     return (
       <Content>
         <Form>
-          <Item
-            inlineLabel
-          >
-            <Label>Username</Label>
-            <Input
-              autoCapitalize='none'
-              autoCorrect={false}
-              onChangeText={this.onEmailChange.bind(this)}
-              value={this.props.email}
-            />
-          </Item>
-          <Item
-            inlineLabel
-          >
-            <Label>Password</Label>
-            <Input
-              secureTextEntry={true}
-              onChangeText={this.onPasswordChange.bind(this)}
-              value={this.props.password}
-            />
-          </Item>
-          <Text style={styles.errorTextStyle}>
-            {this.props.error}
-          </Text>
-          {this.renderButton()}
+          <Card>
+            {this.renderButton('Log in with Google', this.onGoogleButtonPress.bind(this))}
+            {this.renderButton('Log in with Facebook', this.onFacebookButtonPress.bind(this))}
+          </Card>
         </Form>
       </Content>
     )
@@ -74,12 +48,10 @@ const styles = {
   }
 }
 const mapStateToProps = ({ auth }) => {
-  const { email, password, error, loading } = auth;
-  return { email, password, error, loading };
+  const { error, loading } = auth;
+  return { error, loading };
 };
 
 export default connect(mapStateToProps, {
-  emailChanged,
-  passwordChanged,
   loginUser
 })(LoginScreen);
