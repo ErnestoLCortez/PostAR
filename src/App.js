@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
-import { View, Text } from 'native-base';
+import { Container, View, Text } from 'native-base';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import ReduxThunk from 'redux-thunk';
+import reducers from './redux/reducers';
+import Router from './navigation';
+
+const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
 
 class App extends Component {
   render() {
     return (
-      <View>
-        <Text>Hello</Text>
-      </View>
+      <Provider store={store}>
+        <Container>
+          <Router />
+        </Container>
+      </Provider>
     );
   }
 }
